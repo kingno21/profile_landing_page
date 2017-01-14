@@ -1,0 +1,11 @@
+.skills
+  ul
+    - @template_skills.each do |s|
+      li = "Skill: #{s.skill_name}, Short: #{s.short_form}"
+
+= simple_form_for(TemplateSkill.new,url: '/template_skill') do |f|
+  = f.input :skill_name, label: 'Skill', reqired: false
+  = f.input :short_form, label: 'Short version', reqired: false
+  = f.submit 'Submit'
+
+= link_to 'Back', root_path

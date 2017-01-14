@@ -1,0 +1,2 @@
+class TemplateSkill < ApplicationRecord
+end
