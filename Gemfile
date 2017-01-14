@@ -57,6 +57,9 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'devise'
 gem 'slim-rails'
 gem 'simple_form'
+gem 'react-rails'
+gem 'underscore-rails'
+gem 'annotate'
 
 group :development do
   gem "pry-rails"

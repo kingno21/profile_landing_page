@@ -3,6 +3,6 @@
     h3 Skills
     ul
       - @tmp_skills.each do |s|
-        li = s.short_form
+        li = link_to s.short_form, "/profile/#{@profile.id}/update_profile/#{s.id}", remote: true, method: :post
 
-  .own_skill
+  .own_skill#skill_container
