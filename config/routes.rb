@@ -5,5 +5,7 @@ Rails.application.routes.draw do
   resources :template_skill
   resources :profile do
     post "update_profile/:template_skill_id" => 'profile#update_profile'
+    get 'search', on: :collection
+    post 'update_like'
   end
 end

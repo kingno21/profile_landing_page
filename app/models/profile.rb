@@ -12,4 +12,5 @@
 class Profile < ApplicationRecord
   belongs_to :user
 
+  attr_accessor :q
 end

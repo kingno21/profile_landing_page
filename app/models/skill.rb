@@ -12,14 +12,15 @@
 
 class Skill < ApplicationRecord
   belongs_to :user
-  has_many :liked_user
+  has_many :liked_users
 
   def format_skill
     {
         id: id,
         skill_name: skill_name,
         user_id: user_id,
-        like_count: like_count
+        like_count: liked_users.count,
+        liked_user: liked_users.map {|u| u.format_user}
     }
   end
 end

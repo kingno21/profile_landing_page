@@ -2,22 +2,21 @@ root = this
 
 root.profile = {}
 
+@init = () ->
+  data = JSON.parse($('#skills').val())
+  root.userID = parseInt($('#user').val())
+  root.profileID = parseInt($('#profile').val())
+  ReactDOM.render(React.createElement(profile.body, {data: data, userID: root.userID}), document.getElementById('skill_container'));
+
 root.profile.body = React.createClass
   displayName: 'Profle body',
 
   getInitialState: ->
     root.profile.contain = @
-    return { skills: [] }
-
-  componentWillMount: ->
-    self = @
-    $.ajax({
-      url: '/'
-      method: 'get'
-      dataType: 'json'
-      success: (data, e) ->
-        self.setState({ skills: data.skills })
-    })
+    if @props.data
+      return { skills: @props.data }
+    else
+      return { skills: [] }
 
   render: ->
     skills = _.map @state.skills, (e, index) ->
@@ -30,21 +29,32 @@ root.profile.body = React.createClass
 
 
 likedButton = React.createClass
-  displayName: 'likedButton',
+  displayName: 'likeButton',
 
   getInitialState: ->
-    return { skills: [], liked_count: 0 }
+    return { like_count: @props.skill.like_count }
 
   onClick: (e) ->
-    @setState({ liked_count: @state.liked_count + 1 })
+    self = @
+    if !_.isEqual(@props.skill.user_id, root.userID)
+      $.ajax({
+        url: "/profile/#{root.profileID}/update_like",
+        method: 'post',
+        dataType: 'json',
+        data: {
+          user_id: root.userID,
+          skill_id: self.props.skill.id
+        }
+        success: (data, e) ->
+          if !_.isEqual(data, self.props.skill)
+            self.setState({ like_count: data.like_count })
+      })
 
   render: ->
     return React.DOM.div(
       { className: 'skills' },
-      React.DOM.button({ className: 'liked_count', onClick: @onClick }, @state.liked_count),
+      React.DOM.button({ className: 'like_count', onClick: @onClick, value: @state.like_count }, @state.like_count),
       React.DOM.label(null, @props.skill.skill_name)
     )
 
 
-$ ->
-  ReactDOM.render(React.createElement(profile.body), document.getElementById('skill_container'));

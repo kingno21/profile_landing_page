@@ -25,6 +25,7 @@ class User < ApplicationRecord
 
   has_many :skills
   has_one :profile
+  has_many :liked_users
 
   after_create :init_profile
 

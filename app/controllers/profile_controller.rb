@@ -4,14 +4,20 @@ class ProfileController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @profile = Profile.find_by(user_id: current_user.id)
-    skills = @profile.user.skills
-    @tmp_skills = TemplateSkill.all
     respond_to do |format|
+      @profile = Profile.find_by(user_id: current_user.id)
+      init
       format.html
-      format.json { render json: { skills: skills } }
     end
 
+  end
+
+  def show
+    respond_to do |format|
+      @profile = Profile.find_by(user_id: params[:id])
+      init
+      format.html
+    end
   end
 
   def update_profile
@@ -27,6 +33,28 @@ class ProfileController < ApplicationController
         end
       end
     end
+  end
+
+  def update_like
+    respond_to do |format|
+      liked_user = LikedUser.find_or_create_by(skill_id: params[:skill_id], user_id: params[:user_id])
+      format.json { render json: liked_user.skill.format_skill }
+    end
+
+  end
+
+  def search
+    if User.find_by(name: params[:profile][:q])
+      redirect_to action: :show, id: User.find_by(name: params[:profile][:q])
+    else
+      redirect_to root_path
+    end
+  end
+
+  def init
+    @tmp_skills = TemplateSkill.all
+    @skills = @profile.user.skills.order(like_count: :desc).map {|s| s.format_skill}.to_json
+
   end
 
 end

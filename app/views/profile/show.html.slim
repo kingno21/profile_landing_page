@@ -6,7 +6,7 @@
         li = link_to s.short_form, "/profile/#{@profile.id}/update_profile/#{s.id}", remote: true, method: :post
 
   .own_skill#skill_container
-    = hidden_field_tag 'skills', @skills
+    = hidden_field_tag :skills, @skills
     = hidden_field_tag 'user', current_user.id
     = hidden_field_tag 'profile', @profile.id
 
