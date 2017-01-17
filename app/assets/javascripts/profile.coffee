@@ -2,11 +2,108 @@ root = this
 
 root.profile = {}
 
+@show_hide = () ->
+  if root.profile.contain.state.visibility == 'show'
+    root.profile.contain.setState({ visibility: 'hide' })
+  else
+    root.profile.contain.setState({ visibility: 'show' })
+
 @init = () ->
-  data = JSON.parse($('#skills').val())
+  skills = JSON.parse($('#own_skills').val())
   root.userID = parseInt($('#user').val())
   root.profileID = parseInt($('#profile').val())
-  ReactDOM.render(React.createElement(profile.body, {data: data, userID: root.userID}), document.getElementById('skill_container'));
+  ReactDOM.render(React.createElement(profile.body, {data: skills, userID: root.userID}), document.getElementById('skill_container'));
+
+  tmp_skills = JSON.parse($('#tmp_skills').val())
+  ReactDOM.render(React.createElement(profile.skill_tree, {data: tmp_skills}), document.getElementById('tmp_skill_container'));
+
+root.profile.skill_tree = React.createClass
+  displayName: 'Skill Tree',
+
+  getInitialState: ->
+    root.profile.tmp_skill = @
+    if @props.data
+      return { skills: @props.data }
+    else
+      return { skills: [] }
+  render: ->
+    skills = _.map @state.skills, (e, index) ->
+      React.createElement(tmpSkill, { skill: e, key: index })
+
+    return React.DOM.div(
+      { className: 'skill_container' },
+      React.DOM.h3(null, 'Skills'),
+      React.DOM.ul(null, skills),
+      React.createElement(skillForm, {})
+    )
+
+skillForm = React.createClass
+  displayName: 'skill submit form',
+
+  getInitialState: ->
+    return { skill_name: '', short_form: '' }
+
+  onClick: (e)->
+    self = @
+    $.ajax({
+      url: '/template_skill'
+      type: 'post'
+      dataType: 'json'
+      data: {
+        template_skill: {
+          skill_name: @state.skill_name
+          short_form: @state.short_form
+        }
+      }
+      success: (data, e) ->
+        root.profile.tmp_skill.setState((preStep, props) ->
+          return {skills: preStep.skills.concat(data)}
+        )
+        self.setState({ skill_name: '', short_form: ''})
+    })
+
+  set_skill_name: (e)->
+    @setState({ skill_name: e.target.value })
+
+  set_short_form: (e) ->
+    @setState({ short_form: e.target.value })
+
+  render: ->
+    return React.DOM.div(
+      { className: 'skill_submit_form' },
+      React.DOM.div(
+        null,
+        React.DOM.label(null, 'Skill Name'),
+        React.DOM.input({ className: 'skill_name', onChange: @set_skill_name, placeholder: 'Skill Name', value: @state.skill_name }),
+      ),
+      React.DOM.div(
+        null,
+        React.DOM.label(null, 'Short Form'),
+        React.DOM.input({ className: 'short_form', onChange: @set_short_form, placeholder: 'Short Form', value: @state.short_form}),
+
+      ),
+      React.DOM.button({ onClick: @onClick }, 'Submit')
+    )
+
+
+tmpSkill = React.createClass
+  displayName: 'Template Skills',
+
+  onClick: (e) ->
+    self = @
+    $.ajax({
+      type: 'post'
+      url: "/profile/#{root.profileID}/update_profile/#{self.props.skill.id}"
+      data: {
+        added_user_id: root.userID
+      }
+    })
+
+  render: ->
+    return React.DOM.li(
+      { className: 'skill' },
+      React.DOM.button({ className: 'skill_link', onClick: @onClick}, @props.skill.short_form)
+    )
 
 root.profile.body = React.createClass
   displayName: 'Profle body',
@@ -14,13 +111,21 @@ root.profile.body = React.createClass
   getInitialState: ->
     root.profile.contain = @
     if @props.data
-      return { skills: @props.data }
+      data = @props.data.sort((a,b) ->
+        return  b.like_count - a.like_count
+      )
+      return { skills: data, visibility: 'show' }
     else
-      return { skills: [] }
+      return { skills: [], visibility: 'show' }
 
   render: ->
+    self = @
     skills = _.map @state.skills, (e, index) ->
-      React.createElement(likedButton, { skill: e, key: index })
+      if self.state.visibility == 'hide'
+        if e.added_user_id == root.userID
+          React.createElement(likedButton, { skill: e, key: index, order: index })
+      else
+         React.createElement(likedButton, { skill: e, key: index, order: index })
 
     return React.DOM.div(
       { className: 'profile container' },
@@ -30,9 +135,6 @@ root.profile.body = React.createClass
 
 likedButton = React.createClass
   displayName: 'likeButton',
-
-  getInitialState: ->
-    return { like_count: @props.skill.like_count }
 
   onClick: (e) ->
     self = @
@@ -47,14 +149,33 @@ likedButton = React.createClass
         }
         success: (data, e) ->
           if !_.isEqual(data, self.props.skill)
-            self.setState({ like_count: data.like_count })
+            root.profile.contain.setState((preStep, props) ->
+              arr = preStep.skills
+              arr[arr.indexOf(self.props.skill)] = data
+              tmp_data = arr.sort((a,b) ->
+                return  b.like_count - a.like_count
+              )
+              return { skills: tmp_data }
+            )
       })
 
   render: ->
-    return React.DOM.div(
-      { className: 'skills' },
-      React.DOM.button({ className: 'like_count', onClick: @onClick, value: @state.like_count }, @state.like_count),
-      React.DOM.label(null, @props.skill.skill_name)
-    )
+    if @props.order < 6
+      liked_user = _.map @props.skill.liked_user.slice(0, 10), (e, index) ->
+        React.DOM.label({ key: index, className: 'liked_user_label' }, e.user_name)
+
+      return React.DOM.div(
+        { className: 'skills' },
+        React.DOM.button({ className: 'like_count', onClick: @onClick, value: @props.skill.like_count }, @props.skill.like_count),
+        React.DOM.label(null, @props.skill.skill_name),
+        liked_user
+      )
+
+    else
+      return React.DOM.div(
+        { className: 'skills' },
+        React.DOM.button({ className: 'like_count', onClick: @onClick, value: @props.skill.like_count }, @props.skill.like_count),
+        React.DOM.label(null, @props.skill.skill_name)
+      )
 
 

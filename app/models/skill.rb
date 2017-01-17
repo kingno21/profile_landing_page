@@ -19,8 +19,9 @@ class Skill < ApplicationRecord
         id: id,
         skill_name: skill_name,
         user_id: user_id,
+        added_user_id: added_user_id,
         like_count: liked_users.count,
-        liked_user: liked_users.map {|u| u.format_user}
+        liked_user: liked_users.order(created_at: :desc).map {|u| u.format_user},
     }
   end
 end

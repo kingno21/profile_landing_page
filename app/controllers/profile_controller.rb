@@ -28,7 +28,7 @@ class ProfileController < ApplicationController
         if Skill.find_by(user_id: user.id, skill_name: ts.skill_name)
           format.js { render js: ''}
         else
-          @s = Skill.find_or_create_by(user_id: user.id, skill_name: ts.skill_name, like_count: 0).format_skill.to_json
+          @s = Skill.create(user_id: user.id, skill_name: ts.skill_name, like_count: 0, added_user_id: params[:added_user_id]).format_skill.to_json
           format.js
         end
       end
@@ -37,8 +37,13 @@ class ProfileController < ApplicationController
 
   def update_like
     respond_to do |format|
-      liked_user = LikedUser.find_or_create_by(skill_id: params[:skill_id], user_id: params[:user_id])
-      format.json { render json: liked_user.skill.format_skill }
+      if LikedUser.find_by(skill_id: params[:skill_id], user_id: params[:user_id])
+        LikedUser.find_by(skill_id: params[:skill_id], user_id: params[:user_id]).destroy
+        format.json { render json: Skill.find(params[:skill_id]).format_skill }
+      else
+        liked_user = LikedUser.create(skill_id: params[:skill_id], user_id: params[:user_id])
+        format.json { render json: liked_user.skill.format_skill }
+      end
     end
 
   end
@@ -52,8 +57,8 @@ class ProfileController < ApplicationController
   end
 
   def init
-    @tmp_skills = TemplateSkill.all
-    @skills = @profile.user.skills.order(like_count: :desc).map {|s| s.format_skill}.to_json
+    @tmp_skills = TemplateSkill.all.to_json
+    @skills = @profile.user.skills.map {|s| s.format_skill}.to_json
 
   end
 

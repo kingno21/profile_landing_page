@@ -1,14 +1,15 @@
 .profile_body
-  .skill_tree
-    h3 Skills
-    ul
-      - @tmp_skills.each do |s|
-        li = link_to s.short_form, "/profile/#{@profile.id}/update_profile/#{s.id}", remote: true, method: :post
+  .skill_tree_hidden
+    = hidden_field_tag 'tmp_skills', @tmp_skills
+  .skill_tree#tmp_skill_container
 
-  .own_skill#skill_container
-    = hidden_field_tag 'skills', @skills
+  .own_skill_hidden
+    = hidden_field_tag 'own_skills', @skills
     = hidden_field_tag 'user', current_user.id
     = hidden_field_tag 'profile', @profile.id
+  .own_skill#skill_container
+
+  = button_tag 'Show/Hide', :onclick => "show_hide()"
 
 .search_form
   = simple_form_for Profile.new, url: search_profile_index_path, method: :get do |f|
@@ -16,4 +17,7 @@
     = f.submit 'Search'
 
 javascript:
-  init();
+  $(document).ready(function () {
+    init();
+
+  });

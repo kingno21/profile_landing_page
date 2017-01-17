@@ -6,12 +6,7 @@ class TemplateSkillController < ApplicationController
   def create
     @new_tmp = TemplateSkill.create(set_params)
     respond_to do |format|
-      if @new_tmp.save
-        format.html { redirect_to :back }
-      else
-        format.html { redirect_to :back }
-      end
-
+      format.json { render json: @new_tmp }
     end
   end
 

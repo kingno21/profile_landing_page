@@ -1,6 +1,6 @@
 .profile_body{
   .skill_tree{
-    width: 300px;
+    width: 400px;
     ul{
       list-style-type: none;
       margin: 0;
@@ -9,7 +9,20 @@
       li{
         float: right;
         margin: 10px;
+        button {
+          border-radius: 25%;
+          background-color: white;
+          color: black;
+          border: 2px solid;
+          padding: 16px 16px;
+          font-weight: bold;
+        }
       }
     }
   }
+}
+button{}
+
+.liked_user_label{
+  margin: 10px;
 }
