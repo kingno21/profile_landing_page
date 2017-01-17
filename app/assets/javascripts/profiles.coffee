@@ -11,7 +11,7 @@ root.profile = {}
 @init = () ->
   skills = JSON.parse($('#own_skills').val())
   root.userID = parseInt($('#user').val())
-  root.profileID = parseInt($('#profile').val())
+  root.profileID = parseInt($('#profiles').val())
   ReactDOM.render(React.createElement(profile.body, {data: skills, userID: root.userID}), document.getElementById('skill_container'));
 
   tmp_skills = JSON.parse($('#tmp_skills').val())
@@ -26,6 +26,10 @@ root.profile.skill_tree = React.createClass
       return { skills: @props.data }
     else
       return { skills: [] }
+
+  onClick: (e) ->
+    $('#skill_submit_form').toggle()
+
   render: ->
     skills = _.map @state.skills, (e, index) ->
       React.createElement(tmpSkill, { skill: e, key: index })
@@ -33,12 +37,12 @@ root.profile.skill_tree = React.createClass
     return React.DOM.div(
       { className: 'skill_container' },
       React.DOM.h3(null, 'Skills'),
-      React.DOM.ul(null, skills),
-      React.createElement(skillForm, {})
+      React.DOM.ul(null, skills, React.DOM.li(null, React.DOM.button({ onClick: @onClick }, '+'))),
+      React.createElement(skillForm)
     )
 
 skillForm = React.createClass
-  displayName: 'skill submit form',
+  displayName: 'skills submit form',
 
   getInitialState: ->
     return { skill_name: '', short_form: '' }
@@ -51,16 +55,39 @@ skillForm = React.createClass
       dataType: 'json'
       data: {
         template_skill: {
-          skill_name: @state.skill_name
+          skill_name: @state.skill_name.replace(/\b\w/g, (l) -> l.toUpperCase())
           short_form: @state.short_form
         }
       }
       success: (data, e) ->
-        root.profile.tmp_skill.setState((preStep, props) ->
-          return {skills: preStep.skills.concat(data)}
-        )
+        if data
+          root.profile.tmp_skill.setState((preStep, props) ->
+            return {skills: preStep.skills.concat(data)}
+          )
+
         self.setState({ skill_name: '', short_form: ''})
+        self.hide()
     })
+
+  hide: ->
+    $('#skill_submit_form').hide()
+
+
+  componentDidMount: ->
+    self = @
+    input = document.getElementById('input_skill')
+    new Awesomplete input, {
+      list: [
+        'Java', 'C', 'C++', 'Ruby', 'Ruby on Rails', 'Html', 'Javascript',
+        'Artificial Intelligence', 'Machine Learning', 'Node.js', 'CSS', 'Scala',
+        'Python', 'Deep Learning', 'C#', 'Slim', 'SASS', 'SCSS', 'Perl', 'Program Manager',
+        'Quality Enginneer'
+      ]
+    }
+
+    window.addEventListener("awesomplete-selectcomplete", (e) ->
+      self.setState({ skill_name: e.target.value })
+    , false);
 
   set_skill_name: (e)->
     @setState({ skill_name: e.target.value })
@@ -70,20 +97,22 @@ skillForm = React.createClass
 
   render: ->
     return React.DOM.div(
-      { className: 'skill_submit_form' },
-      React.DOM.div(
-        null,
-        React.DOM.label(null, 'Skill Name'),
-        React.DOM.input({ className: 'skill_name', onChange: @set_skill_name, placeholder: 'Skill Name', value: @state.skill_name }),
-      ),
-      React.DOM.div(
-        null,
-        React.DOM.label(null, 'Short Form'),
-        React.DOM.input({ className: 'short_form', onChange: @set_short_form, placeholder: 'Short Form', value: @state.short_form}),
+        { id: 'skill_submit_form', hidden: true },
+        React.DOM.div(
+          null,
+          React.DOM.label(null, 'Skill Name'),
+          React.DOM.input({ className: 'skill_name', id: 'input_skill', onChange: @set_skill_name, placeholder: 'Skill Name', value: @state.skill_name }),
+        ),
+        React.DOM.div(
+          null,
+          React.DOM.label(null, 'Short Form'),
+          React.DOM.input({ className: 'short_form', onChange: @set_short_form, placeholder: 'Short Form', value: @state.short_form}),
 
-      ),
-      React.DOM.button({ onClick: @onClick }, 'Submit')
+        ),
+        React.DOM.button({ onClick: @onClick }, 'Submit')
     )
+
+
 
 
 tmpSkill = React.createClass
@@ -93,7 +122,7 @@ tmpSkill = React.createClass
     self = @
     $.ajax({
       type: 'post'
-      url: "/profile/#{root.profileID}/update_profile/#{self.props.skill.id}"
+      url: "/profiles/#{root.profileID}/update_profile/#{self.props.skill.id}"
       data: {
         added_user_id: root.userID
       }
@@ -128,7 +157,7 @@ root.profile.body = React.createClass
          React.createElement(likedButton, { skill: e, key: index, order: index })
 
     return React.DOM.div(
-      { className: 'profile container' },
+      { className: 'profiles container' },
       skills
     )
 
@@ -140,7 +169,7 @@ likedButton = React.createClass
     self = @
     if !_.isEqual(@props.skill.user_id, root.userID)
       $.ajax({
-        url: "/profile/#{root.profileID}/update_like",
+        url: "/profiles/#{root.profileID}/update_like",
         method: 'post',
         dataType: 'json',
         data: {
@@ -167,7 +196,7 @@ likedButton = React.createClass
       return React.DOM.div(
         { className: 'skills' },
         React.DOM.button({ className: 'like_count', onClick: @onClick, value: @props.skill.like_count }, @props.skill.like_count),
-        React.DOM.label(null, @props.skill.skill_name),
+        React.DOM.a({ href: "/skills/#{@props.skill.id}"}, @props.skill.skill_name),
         liked_user
       )
 
@@ -175,7 +204,7 @@ likedButton = React.createClass
       return React.DOM.div(
         { className: 'skills' },
         React.DOM.button({ className: 'like_count', onClick: @onClick, value: @props.skill.like_count }, @props.skill.like_count),
-        React.DOM.label(null, @props.skill.skill_name)
+        React.DOM.a({ href: "/skills/#{@props.skill.id}"}, @props.skill.skill_name),
       )
 
 

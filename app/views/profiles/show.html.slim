@@ -6,11 +6,11 @@
   .own_skill_hidden
     = hidden_field_tag 'own_skills', @skills
     = hidden_field_tag 'user', current_user.id
-    = hidden_field_tag 'profile', @profile.id
+    = hidden_field_tag 'profiles', @profile.id
   .own_skill#skill_container
 
 .search_form
-  = simple_form_for Profile.new, url: search_profile_index_path, method: :get do |f|
+  = simple_form_for Profile.new, url: search_profiles_path, method: :get do |f|
     = f.input :q, required: false, label: 'Search'
     = f.submit 'Search'
 

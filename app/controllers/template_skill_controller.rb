@@ -4,9 +4,13 @@ class TemplateSkillController < ApplicationController
   end
 
   def create
-    @new_tmp = TemplateSkill.create(set_params)
     respond_to do |format|
-      format.json { render json: @new_tmp }
+      @new_tmp = TemplateSkill.create(set_params)
+      if !@new_tmp.errors
+        format.json { render json: @new_tmp }
+      else
+        format.json { render json: false }
+      end
     end
   end
 

@@ -1,0 +1,8 @@
+{
+  "name": "profile_landing_page",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+	"awesomplete": "^1.1.1"  	
+  }
+}

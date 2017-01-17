@@ -10,4 +10,6 @@
 #
 
 class TemplateSkill < ApplicationRecord
+  validates :skill_name, uniqueness: true
+
 end

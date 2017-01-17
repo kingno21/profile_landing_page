@@ -17,4 +17,6 @@
 //= require react_ujs
 //= require components
 //= require underscore
+//= require awesomplete/awesomplete.min
 //= require_tree .
+

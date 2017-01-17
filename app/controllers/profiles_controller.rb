@@ -1,6 +1,6 @@
 
 
-class ProfileController < ApplicationController
+class ProfilesController < ApplicationController
   before_action :authenticate_user!
 
   def index
@@ -52,7 +52,7 @@ class ProfileController < ApplicationController
     if User.find_by(name: params[:profile][:q])
       redirect_to action: :show, id: User.find_by(name: params[:profile][:q])
     else
-      redirect_to root_path
+      render file: 'public/404.html'
     end
   end
 
