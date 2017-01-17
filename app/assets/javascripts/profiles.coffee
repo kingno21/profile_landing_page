@@ -12,6 +12,7 @@ root.profile = {}
   skills = JSON.parse($('#own_skills').val())
   root.userID = parseInt($('#user').val())
   root.profileID = parseInt($('#profiles').val())
+  root.img = $('#img_url').val()
   ReactDOM.render(React.createElement(profile.body, {data: skills, userID: root.userID}), document.getElementById('skill_container'));
 
   tmp_skills = JSON.parse($('#tmp_skills').val())
@@ -28,7 +29,7 @@ root.profile.skill_tree = React.createClass
       return { skills: [] }
 
   onClick: (e) ->
-    $('#skill_submit_form').toggle()
+    $('#skill_submit_form').toggle(400)
 
   render: ->
     skills = _.map @state.skills, (e, index) ->
@@ -36,7 +37,6 @@ root.profile.skill_tree = React.createClass
 
     return React.DOM.div(
       { className: 'skill_container' },
-      React.DOM.h3(null, 'Skills'),
       React.DOM.ul(null, skills, React.DOM.li(null, React.DOM.button({ onClick: @onClick }, '+'))),
       React.createElement(skillForm)
     )
@@ -100,12 +100,10 @@ skillForm = React.createClass
         { id: 'skill_submit_form', hidden: true },
         React.DOM.div(
           null,
-          React.DOM.label(null, 'Skill Name'),
           React.DOM.input({ className: 'skill_name', id: 'input_skill', onChange: @set_skill_name, placeholder: 'Skill Name', value: @state.skill_name }),
         ),
         React.DOM.div(
           null,
-          React.DOM.label(null, 'Short Form'),
           React.DOM.input({ className: 'short_form', onChange: @set_short_form, placeholder: 'Short Form', value: @state.short_form}),
 
         ),
@@ -152,13 +150,13 @@ root.profile.body = React.createClass
     skills = _.map @state.skills, (e, index) ->
       if self.state.visibility == 'hide'
         if e.added_user_id == root.userID
-          React.createElement(likedButton, { skill: e, key: index, order: index })
-      else
          React.createElement(likedButton, { skill: e, key: index, order: index })
+      else
+        React.createElement(likedButton, { skill: e, key: index, order: index })
 
     return React.DOM.div(
       { className: 'profiles container' },
-      skills
+      React.DOM.ul(null, skills)
     )
 
 
@@ -193,18 +191,24 @@ likedButton = React.createClass
       liked_user = _.map @props.skill.liked_user.slice(0, 10), (e, index) ->
         React.DOM.label({ key: index, className: 'liked_user_label' }, e.user_name)
 
-      return React.DOM.div(
-        { className: 'skills' },
-        React.DOM.button({ className: 'like_count', onClick: @onClick, value: @props.skill.like_count }, @props.skill.like_count),
-        React.DOM.a({ href: "/skills/#{@props.skill.id}"}, @props.skill.skill_name),
-        liked_user
+      return React.DOM.li(
+        { className: 'skill_show' },
+        React.DOM.div(
+          { className: 'skills' },
+          React.DOM.button({ className: 'like_count', onClick: @onClick, value: @props.skill.like_count }, @props.skill.like_count),
+          React.DOM.a({ href: "/skills/#{@props.skill.id}"}, @props.skill.skill_name),
+          liked_user
+        )
       )
 
     else
-      return React.DOM.div(
-        { className: 'skills' },
-        React.DOM.button({ className: 'like_count', onClick: @onClick, value: @props.skill.like_count }, @props.skill.like_count),
-        React.DOM.a({ href: "/skills/#{@props.skill.id}"}, @props.skill.skill_name),
+      return React.DOM.li(
+        { className: 'skill_hide' },
+        React.DOM.div(
+          { className: 'skills' },
+          React.DOM.button({ className: 'like_count', onClick: @onClick, value: @props.skill.like_count }, @props.skill.like_count),
+          React.DOM.a({ href: "/skills/#{@props.skill.id}"}, @props.skill.skill_name),
+        )
       )
 
 

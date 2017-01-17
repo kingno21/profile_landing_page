@@ -2,6 +2,11 @@
   ul
     li.left = link_to 'HOME', root_path
     - if user_signed_in?
+      li
+        .search_form
+          = simple_form_for Profile.new, url: search_profiles_path, method: :get do |f|
+            = f.input :q, required: false, label: false
+            = f.submit 'Search'
       li = link_to '登録情報編集', edit_user_registration_path
       li = link_to 'ログアウト', destroy_user_session_path, method: :delete
     - else

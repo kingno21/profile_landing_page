@@ -21,6 +21,16 @@
           background-color: #111;
         }
       }
+      form{
+        margin-bottom: 16px;
+        div{
+          float: left;
+        }
+        input{
+          float: right;
+          margin: 1px;
+        }
+      }
       &.left{
         float: left;
       }
