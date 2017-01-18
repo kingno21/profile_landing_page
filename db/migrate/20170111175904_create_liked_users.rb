@@ -3,7 +3,7 @@ class CreateLikedUsers < ActiveRecord::Migration[5.0]
     create_table :liked_users do |t|
 
       t.timestamps
-      t.references :skills
+      t.references :skill
       t.integer :user_id
     end
   end
