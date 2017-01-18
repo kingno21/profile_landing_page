@@ -28,3 +28,10 @@ rails runner <project>/lib/init_test.rb
 
 ### addition
 + You can press user name to visit user profile page.
+
+### Main framework
++ React.js
++ Ruby on Rails
++ awesomplete.js
++ Gems
++ ...
