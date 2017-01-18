@@ -1,6 +1,7 @@
 .header_right
   ul
     li.left = link_to 'HOME', root_path
+    li.left = link_to 'User List', show_all_profiles_path
     - if user_signed_in?
       li
         .search_form

@@ -1,0 +1,7 @@
+.user_list
+  ul
+    - @user.each do |u|
+      li
+        div
+          = image_tag 'user-icon.svg'
+          h2 = link_to u.name, profile_path(u)

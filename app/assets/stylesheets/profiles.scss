@@ -3,6 +3,21 @@ body{
   margin-bottom: 10px;
 }
 .profile_body{
+  .user_profile{
+    position: absolute;
+    margin-left: 50px;
+    text-align: center;
+
+    img{
+      max-height: 50px;
+      max-width: 50px;
+    }
+    h3{
+      margin: 0px;
+    }
+  }
+
+
   .skill_tree{
     width: 900px;
     margin: auto;
@@ -104,4 +119,22 @@ body{
 
 .liked_user_label{
   margin: 10px;
+}
+
+.user_list{
+  ul{
+    list-style-type: none;
+    li {
+      float: left;
+      margin-top: 0px;
+      margin-left: 50px;
+      div{
+        text-align: center;
+        img{
+          max-width: 100px;
+          max-height: 100px;
+        }
+      }
+    }
+  }
 }

@@ -15,6 +15,7 @@ class ProfilesController < ApplicationController
   def show
     respond_to do |format|
       @profile = Profile.find_by(user_id: params[:id])
+      @user = @profile.user
       init
       format.html
     end
@@ -52,8 +53,12 @@ class ProfilesController < ApplicationController
     if User.find_by(name: params[:profile][:q])
       redirect_to action: :show, id: User.find_by(name: params[:profile][:q])
     else
-      render file: 'public/404.html'
+      render file: 'public/not_found.html'
     end
+  end
+
+  def show_all
+    @user = User.all.order(created_at: :desc)
   end
 
   def init

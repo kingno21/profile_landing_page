@@ -1,16 +1,22 @@
 .profile_body
+  .user_profile
+    = image_tag 'user-icon.svg'
+    h3 = @user.name
   .skill_tree_hidden
     = hidden_field_tag 'tmp_skills', @tmp_skills
   .skill_tree
     = image_tag 'skill.png'
     #tmp_skill_container
-
+      = hidden_field_tag 'tmp_skills', @tmp_skills
+        
   .own_skill_hidden
     = hidden_field_tag 'own_skills', @skills
     = hidden_field_tag 'user', current_user.id
     = hidden_field_tag 'profiles', @profile.id
   .own_skill#skill_container
-
+    = hidden_field_tag 'own_skills', @skills
+    = hidden_field_tag 'user', current_user.id
+    = hidden_field_tag 'profiles', @profile.id
 javascript:
   $(document).ready(function () {
     init();

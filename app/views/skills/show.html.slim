@@ -1,4 +1,11 @@
-h3 = @s.skill_name
-ul
-  - @user.each do |u|
-    li = u.name
+.users_of_skill
+  .skill_name
+    h1 = @s.skill_name
+  .users
+    ul
+      - @user.each do |u|
+        li
+          .user
+            = image_tag 'user-icon.svg'
+            h3 = link_to u.name, profile_path(u.id)
+            h3 = @liked_user.where(skill_id: u.skills.last.id).count

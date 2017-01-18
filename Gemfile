@@ -60,6 +60,9 @@ gem 'simple_form'
 gem 'react-rails'
 gem 'underscore-rails'
 gem 'annotate'
+gem 'devise-bootstrap-views'
+gem 'devise-i18n'
+gem 'devise-i18n-views'
 
 group :development do
   gem "pry-rails"

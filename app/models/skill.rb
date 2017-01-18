@@ -2,12 +2,13 @@
 #
 # Table name: skills
 #
-#  id         :integer          not null, primary key
-#  skill_name :string
-#  user_id    :integer
-#  like_count :integer          default("0")
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id            :integer          not null, primary key
+#  skill_name    :string
+#  user_id       :integer
+#  like_count    :integer          default("0")
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  added_user_id :integer
 #
 
 class Skill < ApplicationRecord

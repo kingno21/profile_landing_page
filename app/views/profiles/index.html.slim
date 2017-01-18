@@ -1,10 +1,12 @@
 .profile_body
+  .user_profile
+    = image_tag 'user-icon.svg'
+    h3 = current_user.name
   .skill_tree_hidden
     = hidden_field_tag 'tmp_skills', @tmp_skills
   .skill_tree
     = image_tag 'skill.png'
     #tmp_skill_container
-
   .own_skill_hidden
     = hidden_field_tag 'own_skills', @skills
     = hidden_field_tag 'user', current_user.id
