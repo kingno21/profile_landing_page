@@ -6,7 +6,7 @@ class TemplateSkillController < ApplicationController
   def create
     respond_to do |format|
       @new_tmp = TemplateSkill.create(set_params)
-      if !@new_tmp.errors
+      if !@new_tmp.errors.any?
         format.json { render json: @new_tmp }
       else
         format.json { render json: false }

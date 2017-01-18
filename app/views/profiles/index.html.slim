@@ -7,6 +7,7 @@
   .skill_tree
     = image_tag 'skill.png'
     #tmp_skill_container
+
   .own_skill_hidden
     = hidden_field_tag 'own_skills', @skills
     = hidden_field_tag 'user', current_user.id

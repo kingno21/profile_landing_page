@@ -60,6 +60,7 @@ skillForm = React.createClass
         }
       }
       success: (data, e) ->
+        console.log data
         if data
           root.profile.tmp_skill.setState((preStep, props) ->
             return {skills: preStep.skills.concat(data)}
