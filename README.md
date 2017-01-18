@@ -1,25 +1,30 @@
-# README
+# Project make Landing Page.
+This project is just for practice.
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Usage
+### Register a user, and for test run.
+```
+rails runner <project>/lib/init_test.rb
+```
 
-Things you may want to cover:
+### And u will redirect to Home page.
 
-* Ruby version
++ Home button is about return to root.
++ User list can show all Users.
++ Search bar is about search user by name.
 
-* System dependencies
+### For main page
 
-* Configuration
++ \+ button help u to add new skills.
++ With input skill name added auto complete.
++ You can push Skill to add to yourself.
++ With launch other users page u can also add skill by push skill button.
 
-* Database creation
+### Skill list
++ You can't + 1 to yourself.
++ You can add / cancel + 1 to each user.
++ With show/hide button u can show or hide skills which added by other users.
++ With press label of skill it will jump you to the page with same skill.
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-# profile_landing_page
+### addition
++ You can press user name to visit user profile page.
