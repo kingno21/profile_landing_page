@@ -117,7 +117,14 @@ body{
   }
 }
 
-.liked_user_label{
+a.liked_user_label{
+  margin-left: 3px;
+  background-color: #CCCCEA !important;
+  color: white;
+  padding: 5px 6px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
   margin: 10px;
 }
 

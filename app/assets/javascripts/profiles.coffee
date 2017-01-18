@@ -190,7 +190,8 @@ likedButton = React.createClass
   render: ->
     if @props.order < 6
       liked_user = _.map @props.skill.liked_user.slice(0, 10), (e, index) ->
-        React.DOM.label({ key: index, className: 'liked_user_label' }, e.user_name)
+        console.log e
+        React.DOM.a({ key: index, className: 'liked_user_label', href: "/profiles/#{e.user_id}"}, e.user_name)
 
       return React.DOM.li(
         { className: 'skill_show' },
